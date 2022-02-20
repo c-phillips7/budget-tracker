@@ -52,72 +52,21 @@ self.addEventListener('fetch', function (evt) {
 // delete outdated caches
 self.addEventListener('activate', function (evt) {
     evt.waitUntil(
-        
-    )
+        caches.keys().then(function(keyList) {
+            let cacheKeeplist = keyList.filter(function(key) {
+                return key.indexOf(APP_PREFIX);
+            });
+            // add current cache name to key list
+            cacheKeeplist.push(CACHE_NAME);
 
-})
-
-
-
-
-// Activate the service worker and remove old data from the cache
-// YOUR CODE HERE
-//
-// self.addEventListener('active', function (evt) {
-//     evt.waitUntil(
-//         caches.keys().then(keyList => {
-//             return Promise.all(
-//                 keyList.map(key => {
-//                     if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
-//                         console.log('Removing old cache data', key);
-//                         return caches.delete(key);
-//                     }
-//                 })
-//             );
-//         })
-//     );
-//     self.clients.claim();
-// })
-
-// Intercept fetch requests
-// YOUR CODE HERE
-//
-// self.addEventListener('fetch', function (evt) {
-//     if (evt.request.url.includes('/api/')) {
-//         evt.respondWith(
-//             caches
-//             .open(DATA_CACHE_NAME)
-//             .then(cache => {
-//                 return fetch(evt.request)
-//                     .then(response => {
-//                         // If the response was good, clone it and store it in the cache.
-//                         if (response.status === 200) {
-//                             cache.put(evt.request.url, response.clone());
-//                         }
-
-//                         return response;
-//                     })
-//                     .catch(err => {
-//                         // Network request failed, try to get it from the cache.
-//                         return cache.match(evt.request);
-//                     });
-//             })
-//             .catch(err => console.log(err))
-//         );
-
-//         return;
-//     }
-//     evt.respondWith(
-//         fetch(evt.request).catch(function () {
-//             console.log("failed to fetch, check cache", evt.request.url);
-//             return caches.match(evt.request).then(function (response) {
-//                 console.log("match found!!", evt.request.url);
-//                 if (response) {
-//                     return response;
-//                 } else if (evt.request.headers.get('accept').includes('text.html')) {
-//                     return caches.match('/')
-//                 }
-//             });
-//         })
-//     );
-// });
+            return Promise.all(
+                keyList.map(function(key, i){
+                    if (cacheKeeplist.indexOf(key) === -1) {
+                        console.log('deleting cache')
+                        return caches.delete(keyList[i]);
+                    }
+                })
+            );
+        })
+    );
+});
