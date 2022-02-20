@@ -28,5 +28,11 @@ function saveBudget(record) {
 }
 
 function uploadBudget() {
+    const transaction = db.transaction(['new_budget'], 'readwrite');
+    const budgetObjectStore = transaction.objectStore('new_budget');
+    const getAll = budgetObjectStore.getAll();
 
+    getAll.onsuccess = function() {
+        // if there is data in sore, send it to api
+    }
 }
