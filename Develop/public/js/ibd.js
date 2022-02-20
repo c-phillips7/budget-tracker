@@ -16,10 +16,17 @@ request.onsuccess = function(evt) {
     }
 };
 
-function saveBudget() {
+request.onerror = function(evt) {
+    console.log(evt.target.errorCode);
+}
 
+function saveBudget(record) {
+    const transaction = db.transaction(['new_budget'], 'readwrite');
+    const budgetObjectStore = transaction.objectStore('new_budget');
+    // add record to indexedDB store
+    budgetObjectStore.add(record);
 }
 
 function uploadBudget() {
-    
+
 }
