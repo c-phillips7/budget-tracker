@@ -1,5 +1,7 @@
 # Budget Tracker PWA
 
+  ![screenshot](/public/images/Screenshot.png)
+
   Deployed URL: https://cp-budget-tracker.herokuapp.com/
 
 
